@@ -1,0 +1,9 @@
+program teste9
+declare
+    integer base, altura, area;
+begin
+    read(base);
+    read(altura);
+    area := (base * altura) / 2;
+    write(area);
+end
