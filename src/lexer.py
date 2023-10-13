@@ -1,6 +1,6 @@
 import ply.lex as lex
 
-from symbol_table import SymbolTable
+from src.symbol_table import SymbolTable
 
 
 class Lexer:
