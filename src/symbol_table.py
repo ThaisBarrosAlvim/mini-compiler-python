@@ -6,9 +6,9 @@ class SymbolTable:
     def __str__(self):
         return str(self.table)
 
-    def add(self, symbol, value, tk_type=None):
+    def add(self, symbol, pos, line, tk_type=None):
         if symbol not in self.table:
-            self.table[symbol] = {"Value": value, "Type": tk_type}
+            self.table[symbol] = {"Position": {"line": line, "pos": pos}, "Type": tk_type}
         else:
             raise Exception(f"{symbol} has already been declared")
 

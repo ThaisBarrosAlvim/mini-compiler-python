@@ -26,12 +26,6 @@ class Lexer:
         'TRIPLEGREATER', 'LESSGREATER', 'ASCII_LITERAL', 'HEXADECIMAL', 'TERNAL'
     )
 
-    def add_symbol(self, symbol, value):
-        self.symbol_table.add(symbol, value)
-
-    def get_symbol(self, symbol):
-        return self.symbol_table.get(symbol)
-
     # Regular expression rules for simple tokens
 
     # Operators
@@ -68,7 +62,7 @@ class Lexer:
         t.type = self.reserved_map.get(t.value, 'ID')
         if t.type == 'ID':
             if not self.symbol_table.exists(t.value):
-                self.add_symbol(t.value, value=None)
+                self.symbol_table.add(t.value, t.lexpos, t.lineno, t.type)
         return t
 
     def t_NUMBER(self, t):
