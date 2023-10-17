@@ -38,6 +38,43 @@ On Windows:
 pip install -r requirements.txt
 ```
 
+## Simbols Table
+
+The Symbols Table stores recognized tokens, their types, and positions in the source code. Below is an example displaying various tokens and their details.
+
+```json
+{
+  "teste8": {
+    "Position": {
+      "line": 1,
+      "pos": 8
+    },
+    "Type": "ID"
+  },
+  "peso": {
+    "Position": {
+      "line": 3,
+      "pos": 35
+    },
+    "Type": "ID"
+  },
+  "altura": {
+    "Position": {
+      "line": 3,
+      "pos": 41
+    },
+    "Type": "ID"
+  },
+  "imc": {
+    "Position": {
+      "line": 3,
+      "pos": 49
+    },
+    "Type": "ID"
+  }
+}
+```
+
 ## Usage
 
 ### Running the Lexical Analyzer
