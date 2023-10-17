@@ -73,7 +73,3 @@ class TestLexer(TestCase):
         result = self.lexer_proccess_data(f'{self.INPUT_TESTS_FOLDER}/input_test9.txt')
         expected = self.read_file(f'{self.EXPECTED_TESTS_FOLDER}/expected_test9.txt').split()
         self.assertEqual(expected, result)
-
-
-if __name__ == '__main__':
-    TestCase.main()
