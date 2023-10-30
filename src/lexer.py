@@ -12,8 +12,8 @@ class Lexer:
             self.reserved_map[r.lower()] = r
 
     reserved = (
-        'IF', 'ELSE', 'WHILE', 'FOR', 'DO', 'TO', 'READ', 'WRITE', 'PROGRAM', 'DECLARE', 'INTEGER', 'DECIMAL', 'BEGIN',
-        'END', 'AND', 'OR', 'NOT', 'MOD',
+        'IF', 'ELSE', 'THEN', 'WHILE', 'FOR', 'DO', 'TO', 'READ', 'WRITE', 'PROGRAM', 'DECLARE', 'INTEGER', 'DECIMAL',
+        'BEGIN', 'END', 'AND', 'OR', 'NOT', 'MOD',
     )
 
     tokens = reserved + (
@@ -23,7 +23,7 @@ class Lexer:
         # Operators (+,-,*,/,%,<,>,<=,>=,==,!=,&&,||,!,=)
         'PLUS', 'MINUS', 'MULTI', 'DIVIDE', 'LPAREN', 'RPAREN', 'COMMA', 'SEMICOLON', 'COLON', 'EQUAL', 'LESS',
         'LESSEQUAL', 'GREATER', 'GREATEREQUAL', 'ASSIGN', 'DOT', 'DOUBLEGREATER', 'DOUBLELESS', 'TRIPLELESS',
-        'TRIPLEGREATER', 'LESSGREATER', 'ASCII_LITERAL', 'HEXADECIMAL', 'TERNAL'
+        'TRIPLEGREATER', 'LESSGREATER', 'TERNAL', 'LITERAL'
     )
 
     # Regular expression rules for simple tokens
@@ -48,8 +48,6 @@ class Lexer:
     t_TRIPLELESS = r'<<<'
     t_TRIPLEGREATER = r'>>>'
     t_LESSGREATER = r'<>'
-    t_ASCII_LITERAL = r'\#'
-    t_HEXADECIMAL = r'\$'
     t_TERNAL = r'\?'
 
     # String literal
@@ -73,6 +71,10 @@ class Lexer:
     def t_DECIMAL(self, t):
         r"""\d+\.\d+"""
         t.value = float(t.value)
+        return t
+
+    def t_LITERAL(self, t):
+        r"""\"[^"]*\\"""
         return t
 
     def t_NEWLINE(self, t):

@@ -1,8 +1,11 @@
-from src.lexer import Lexer
-from ply import lex
+from src.parser import Parser
 
-lexer = Lexer()
-lexer.build()
+if __name__ == '__main__':
+    parser = Parser()
+    parser.build(build_lexer=True)
 
-if __name__ == "__main__":
-    lex.runmain(lexer.lex)
+    with open('tests/resources/input/input_test9.txt', 'r') as f:
+        data = f.read()
+
+    print('Return: ', parser.parser.parse(data, tracking=True))
+
