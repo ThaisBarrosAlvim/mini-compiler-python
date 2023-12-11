@@ -24,27 +24,37 @@ class TestParser(TestCase):
         self.assertEqual(self.parser.errors[-1] if len(self.parser.errors) > 0 else None, expected)
 
     def test_lexer_test1(self):
-        self.check_expected('input_test1.txt', 'Parser: Syntax error at line 10 token WRITE. On:\nwrite(result)\n^')
+        self.check_expected('input_test1.txt', 'Parser: Syntax error at line 10 token WRITE. On:\n'
+                                                                    'write(result)\n'
+                                                                    '^')
 
     def test_lexer_test2(self):
-        self.check_expected('input_test2.txt', 'Parser: Syntax error at line 2 token ID. On:\ndeclarando\n^')
+        self.check_expected('input_test2.txt', 'Parser: Syntax error at line 2 token ID. On:\n'
+                                                                    'declarando\n'
+                                                                    '^')
 
     def test_lexer_test3(self):
-        self.check_expected('input_test3.txt', 'Parser: Syntax error at line 11 token ID. On:\nsoma := soma # id;\n               ^')
+        self.check_expected('input_test3.txt', 'Parser: Syntax error at line 11 token ID. On:\n'
+                                                                    'soma := soma # id;\n'
+                                                                    '               ^')
 
     def test_lexer_test4(self):
         self.check_expected('input_test4.txt', None)
 
     def test_lexer_test5(self):
-        self.check_expected('input_test5.txt', 'Parser: Syntax error at line 10 token ELSE. On:\nelse\n^')
+        self.check_expected('input_test5.txt', 'Parser: Syntax error at line 10 token ELSE. On:\n'
+                                                                    'else\n'
+                                                                    '^')
 
-    # def test_lexer_test6(self):
-    #     # TODO validar onde eh o erro
-    #     self.check_expected('input_test6.txt', 'Parser: Syntax error at line 9 position 131 token GREATER')
-    #
-    # def test_lexer_test7(self):
-    #     # TODO validar onde eh o erro
-    #     self.check_expected('input_test7.txt', 'Parser: Syntax error at line 9 position 135 token GREATER')
+    def test_lexer_test6(self):
+        self.check_expected('input_test6.txt', 'Parser: Syntax error at line 9 token GREATER. On:\n'
+                                                                    'if ( a>b and a>c ) then\n'
+                                                                    '              ^')
+
+    def test_lexer_test7(self):
+        self.check_expected('input_test7.txt', 'Parser: Syntax error at line 9 token GREATER. On:\n'
+                                                                    'maior:= (a>b and a>c)?a:(b>c)?b:c;\n'
+                                                                    '                  ^')
 
     def test_lexer_test8(self):
         self.check_expected('input_test8.txt', None)
