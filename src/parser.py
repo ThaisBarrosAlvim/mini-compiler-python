@@ -6,8 +6,9 @@ class Parser:
     tokens = Lexer.tokens
 
     def __init__(self):
-        self.error = None
+        self.errors = []
         self.parser = None
+        self.data = None
 
     def p_program(self, p):
         """program : PROGRAM ID body"""

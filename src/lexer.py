@@ -56,11 +56,11 @@ class Lexer:
     t_ignore = ' \t'
 
     def t_ID(self, t):
-        r"""[a-zA-Z_][a-zA-Z_0-9]*"""
+        r"""[a-zA-Z][a-zA-Z0-9]*"""
+        print(f'Lexer: {t.value.upper()} on line {t.lineno}, position {t.lexpos}')
         t.type = self.reserved_map.get(t.value, 'ID')
-        if t.type == 'ID':
-            if not self.symbol_table.exists(t.value):
-                self.symbol_table.add(t.value, t.lexpos, t.lineno, t.type)
+        if not self.symbol_table.exists(t.value):
+            self.symbol_table.add(t.value, t.lexpos, t.lineno, t.type)
         return t
 
     def t_NUMBER(self, t):
@@ -86,7 +86,7 @@ class Lexer:
         pass
 
     def t_error(self, t):
-        print("Illegal character '%s'" % t.value[0])
+        print("Lexer: Illegal character '%s'" % t.value[0])
         t.lexer.skip(1)
 
     def build(self, ):
