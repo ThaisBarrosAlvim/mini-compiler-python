@@ -43,39 +43,43 @@ class Parser:
                 | DECIMAL"""
 
     def p_statement_list(self, p):
-        """statement_list : statement statement_list"""
+        """statement_list : statement SEMICOLON p_statement_list_single"""
 
     def p_statement_list_single(self, p):
-        """statement_list : statement
-                            | SEMICOLON"""
+        """p_statement_list_single : statement_list
+                            | empty"""
 
     def p_statement(self, p):
         """statement :  if_statement
-                | assignment
+                | assign_statement
                 | while_statement
                 | do_while_statement
                 | for_statement
                 | read_statement
                 | write_statement"""
 
-    def p_assignment(self, p):
-        """assignment : ID ASSIGN expression SEMICOLON"""
-        p[0] = ('assignment', p[1], p[3])
+    def p_assign_statement(self, p):
+        """assign_statement : ID ASSIGN expression"""
+        p[0] = ('assign_statement', p[1], p[3])
 
     def p_if_statement(self, p):
-        """if_statement : IF condition THEN statement_list END
-                        | IF condition THEN statement_list ELSE statement_list END"""
+        """if_statement : IF condition THEN statement_list if_statement_aux"""
+
+    def p_if_statement_aux(self, p):
+        """if_statement_aux : END
+                            | ELSE statement_list END"""
 
     def p_condition(self, p):
-        """condition : expression relop expression"""
-        p[0] = (p[2], p[1], p[3])
+        """condition : expression"""
+        # FIXME erro no teste5
+        # p[0] = (p[2], p[1], p[3])
 
     def p_do_while_statement(self, p):
-        """do_while_statement : DO statement_list WHILE condition SEMICOLON"""
+        """do_while_statement : DO statement_list WHILE condition"""
         p[0] = ('do-while', p[2], p[4])
 
     def p_for_statement(self, p):
-        """for_statement : FOR assignment TO expression DO statement_list END"""
+        """for_statement : FOR assign_statement TO expression DO statement_list END"""
         p[0] = ('for', p[2], p[4], p[6])
 
     def p_while_statement(self, p):
@@ -83,11 +87,11 @@ class Parser:
         p[0] = ('while', p[2], p[4])
 
     def p_read_statement(self, p):
-        """read_statement : READ LPAREN identifier_list RPAREN SEMICOLON"""
+        """read_statement : READ LPAREN ID RPAREN"""
         p[0] = ('read', p[3])
 
     def p_write_statement(self, p):
-        """write_statement : WRITE LPAREN writable RPAREN SEMICOLON"""
+        """write_statement : WRITE LPAREN writable RPAREN"""
         p[0] = ('write', p[3])
 
     def p_writable(self, p):
@@ -95,26 +99,39 @@ class Parser:
                     | SCONST"""
 
     def p_expression(self, p):
-        """expression : expression addop term
-                      | term"""
-        if len(p) == 2:
-            p[0] = p[1]
-        else:
-            p[0] = (p[2], p[1], p[3])
+        """expression : simple_expression expression_aux"""
+        # FIXME erro em todos
+        # if len(p) == 2:
+        #     p[0] = p[1]
+        # else:
+        #     p[0] = (p[2], p[1], p[3])
+
+    def p_expression_aux(self, p):
+        """expression_aux : relop simple_expression
+                    | empty"""
+
+    def p_par_expression(self, p):
+        """par_expression : LPAREN expression RPAREN"""
+
+    def p_simple_expression(self, p):
+        """simple_expression : term
+                            | par_expression TERNAL simple_expression COLON simple_expression
+                            | simple_expression addop term"""
 
     def p_term(self, p):
-        """term : term mulop factor
-                | factor"""
-        if len(p) == 2:
-            p[0] = p[1]
-        else:
-            p[0] = (p[2], p[1], p[3])
+        """term : factor_a
+                | term mulop factor_a"""
+
+    def p_factor_a(self, p):
+        """factor_a : factor 
+                | NOT factor 
+                | MINUS factor"""
 
     def p_factor(self, p):
-        """factor : ID
-                  | constant
-                  | LPAREN expression RPAREN
-                  | unary factor"""
+        """factor : ID 
+                | NUMBER 
+                | par_expression"""
+
         if len(p) == 2:
             p[0] = p[1]
         elif p[1] in ['-', 'NOT']:
@@ -153,10 +170,14 @@ class Parser:
 
     def p_error(self, p):
         if not p:
-            self.error = "Syntax error at EOF"
+            self.errors.append("Parser: Syntax error at EOF")
         else:
-            self.error = f"Syntax error at line {p.lineno} position {p.lexpos} token {p.type}"
-        print(self.error)
+            error_line = self.data.split('\n')[p.lineno-1]
+            where = error_line.lstrip() + '\n' + " " * ((p.lexpos - len('\n'.join(self.data.split('\n')[:p.lineno-1]))) - ((len(error_line) - len(error_line.lstrip()))+1)) + "^"
+            self.errors.append(f"Parser: Syntax error at line {p.lineno} token {p.type}. "
+                               f"On:\n{where}")
+        print(self.errors[-1])
+        # print(f"debug: {self.errors[-1].__repr__()}")
 
     def build(self, build_lexer=False):
         self.parser = yacc.yacc(module=self)
