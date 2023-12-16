@@ -6,7 +6,7 @@ from src.utils import Error
 from tests.utils import read_file
 
 
-class TestParser(TestCase):
+class TestErrors(TestCase):
     BASE_FILE_PATH = os.path.dirname(os.path.abspath(__file__))
     INPUT_TESTS_FOLDER = f'{BASE_FILE_PATH}/resources/input'
     LEXER_DEBUG = False  # Set to True to see the lexer debug output
@@ -22,9 +22,9 @@ class TestParser(TestCase):
 
     def check_expected(self, input_file_path: str, expected_errors: list[Error]):
         self.parser_proccess_data(f'{self.INPUT_TESTS_FOLDER}/{input_file_path}')
-        print('\n\nErrors: \n',
-              '\n'.join([e.exact().__repr__()[1:-1] for e in self.parser.errors if e.type == 'parser']))
-        self.assertEqual([e for e in self.parser.errors if e.type == 'parser'], expected_errors)
+        # print('\n\nErrors: \n',
+        #       '\n'.join([e.exact().__repr__()[1:-1] for e in self.parser.errors]))
+        self.assertEqual([e for e in self.parser.errors], expected_errors)
 
     def test_lexer_test1(self):
         errors = [
@@ -40,12 +40,16 @@ class TestParser(TestCase):
 
     def test_lexer_test3(self):
         errors = [
+            Error("Illegal character '#'", line=11, column=179, _type='lexer'),
             Error("Syntax error on 'id'", line=11, column=181, _type='parser')
         ]
         self.check_expected('input_test3.txt', errors)
 
     def test_lexer_test4(self):
-        errors = []
+        errors = [
+            Error("Illegal character '_'", line=3, column=44, _type='lexer'),
+            Error("Illegal character '$'", line=8, column=141, _type='lexer')
+        ]
         self.check_expected('input_test4.txt', errors)
 
     def test_lexer_test5(self):
@@ -56,7 +60,7 @@ class TestParser(TestCase):
 
     def test_lexer_test6(self):
         errors = [
-            Error("Syntax error on '>'", line=10, column=154, _type='parser')
+            Error("Syntax error on '>'", line=9, column=139, _type='parser')
         ]
         self.check_expected('input_test6.txt', errors)
 
@@ -67,9 +71,16 @@ class TestParser(TestCase):
         self.check_expected('input_test7.txt', errors)
 
     def test_lexer_test8(self):
-        errors = []
+        errors = [
+            Error("Symbol peso already declared", line=4, column=63, _type='semantic'),
+            Error("Symbol 'altura' not declared", line=7, column=102, _type='semantic'),
+            Error("Symbol 'altura' not declared", line=8, column=130, _type='semantic'),
+            Error("Symbol 'altura' not declared", line=8, column=137, _type='semantic'),
+        ]
         self.check_expected('input_test8.txt', errors)
 
     def test_lexer_test9(self):
-        errors = []
+        errors = [
+            Error("Symbol 'variable' not declared", line=8, column=147, _type='semantic')
+        ]
         self.check_expected('input_test9.txt', errors)

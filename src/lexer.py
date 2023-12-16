@@ -60,7 +60,7 @@ class Lexer:
     t_ignore = ' \t'
 
     def t_ID(self, t):
-        r"""[a-zA-Z][a-zA-Z0-9]*"""
+        r"""[a-zA-Z][a-zA-Z0-9_]*"""
         if self.debug:
             print(f'DEBUG(LEXER): {t.value.upper()} on line {t.lineno}, position {t.lexpos}')
         t.type = self.reserved_map.get(t.value, 'ID')
