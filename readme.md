@@ -1,102 +1,62 @@
-# Lexical Analyzer with PLY
+# Lexical, Syntax, and Semantic Analyzer with PLY
 
-This project is a lexical analyzer built with Python using the PLY library. It features custom tokens, processing rules, and a symbol table to store recognized tokens.
+This project is a comprehensive analyzer for a programming language, using Python and the PLY library. It includes lexical, syntax, and semantic analysis, with custom tokens, processing rules, a symbol table, and error handling.
+
+## Project Overview
+
+The analyzer comprises lexical, syntax, and semantic components. It's built using PLY (Python Lex-Yacc), facilitating the construction of lexer and parser for source code analysis. The semantic analyzer is integrated with the syntactic analyzer for validating semantic errors during compilation.
+
+### Key Features
+
+- **Lexical Analyzer**: Groups source code into lexemes and tokens.
+- **Syntax Analyzer**: Validates the token stream against the programming language's syntax.
+- **Semantic Analyzer**: Ensures instructions are semantically coherent for machine language conversion.
 
 ## Requirements
 
 - Python 3.x
-- PLY
+- [PLY library](https://github.com/dabeaz/ply)
 - pytest (for running tests)
 
-## Installation
+## Installation and Usage
 
-Follow the steps below to set up and run the project.
+1. **Create and Activate a Virtual Environment**:
+   - Linux: `python -m venv venv` and `source venv/bin/activate`
+   - Windows: `python -m venv venv` and `.\venv\Scripts\activate`
 
-### 1. Create a Virtual Environment
+2. **Install Dependencies**:
+   - Run `pip install -r requirements.txt`
 
-```shell
-python -m venv venv
-```
+3. **Run the Analyzer**:
+   - Execute `python main.py`
 
-### 2. Activate the Virtual Environment
+4. **Run Unit Tests**:
+   - Execute `pytest` in the terminal.
+   - All tests should pass, indicating the analyzer's functionality.
 
-On Linux:
+### Symbols Table
 
-```shell
-source venv/bin/activate
-```
-
-On Windows:
-
-```shell
-.\venv\Scripts\activate
-```
-
-### 3. Install the Dependencies
-
-```shell
-pip install -r requirements.txt
-```
-
-## Usage
-
-### Running the Lexical Analyzer
-
-1. Run the `main.py` file:
-
-```shell
-python main.py
-```
-
-2. Insert or paste the code you wish to analyze.
-3. Press `CTRL + D` (on Linux) to finish the input.
-4. The output will be displayed on the screen, as shown in Figure 1 below.
-
-![Figure 1](./imgs/terminal_run.png)
-
-### Running Unit Tests
-
-Ensure all dependencies are installed and run:
-
-```shell
-pytest
-```
-
-All unit tests should pass, validating the functionality of the lexical analyzer.
-
-## Simbols Table
-
-The Symbols Table stores recognized tokens, their types, and positions in the source code. Below is an example displaying various tokens and their details.
+Stores recognized tokens with types and positions. Example:
 
 ```json
 {
-  "teste8": {
-    "Position": {
-      "line": 1,
-      "pos": 8
-    },
-    "Type": "ID"
+  "a": {
+    "Position": {"line": 3, "pos": 50},
+    "Type": "integer"
   },
-  "peso": {
-    "Position": {
-      "line": 3,
-      "pos": 35
-    },
-    "Type": "ID"
-  },
-  "altura": {
-    "Position": {
-      "line": 3,
-      "pos": 41
-    },
-    "Type": "ID"
-  },
-  "imc": {
-    "Position": {
-      "line": 3,
-      "pos": 49
-    },
-    "Type": "ID"
-  }
+  ...
 }
 ```
+
+## Test Cases
+
+Test cases focus on identifying lexical, syntax, and semantic errors. Each case targets specific error scenarios, demonstrating the analyzer's robustness in error detection and handling.
+
+## Future Improvements
+
+- **Code Generation**: Implementing the code generation phase to convert intermediate code into executable code, completing the compiler's functionality.
+- **Enhanced Error Recovery**: Improving error recovery mechanisms, especially in the syntax analyzer, for better handling of multiple errors in a single run (Panic Mode).
+
+## Conclusion
+
+This project provides insights into compiler construction, especially in analysis phases. Although it doesn't cover code generation, it lays a strong foundation for understanding and developing compilers.
