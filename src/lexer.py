@@ -1,13 +1,17 @@
 import ply.lex as lex
 
+from src.utils import Error
 from src.symbol_table import SymbolTable
 
 
 class Lexer:
-    def __init__(self):
+    def __init__(self, errors: list[Error], debug=False):
         self.lex = None
+        self.data = None
+        self.debug = debug
         self.symbol_table = SymbolTable()
         self.reserved_map = {}
+        self.errors = errors  # to use the same list of errors that the parser uses
         for r in self.reserved:
             self.reserved_map[r.lower()] = r
 
@@ -57,10 +61,9 @@ class Lexer:
 
     def t_ID(self, t):
         r"""[a-zA-Z][a-zA-Z0-9]*"""
-        print(f'Lexer: {t.value.upper()} on line {t.lineno}, position {t.lexpos}')
+        if self.debug:
+            print(f'DEBUG(LEXER): {t.value.upper()} on line {t.lineno}, position {t.lexpos}')
         t.type = self.reserved_map.get(t.value, 'ID')
-        if not self.symbol_table.exists(t.value):
-            self.symbol_table.add(t.value, t.lexpos, t.lineno, t.type)
         return t
 
     def t_NUMBER(self, t):
@@ -86,7 +89,8 @@ class Lexer:
         pass
 
     def t_error(self, t):
-        print("Lexer: Illegal character '%s'" % t.value[0])
+        self.errors.append(Error("Illegal character '%s'" % t.value[0], t.lineno, t.lexpos, 'lexer', self.data))
+        print(self.errors[-1])
         t.lexer.skip(1)
 
     def build(self, ):

@@ -5,5 +5,5 @@ begin
     read(base);
     read(altura);
     area := (base * altura) / 2;
-    write(area);
+    write(lasanha);
 end

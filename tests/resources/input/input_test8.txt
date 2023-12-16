@@ -1,6 +1,7 @@
 program teste8
 declare
-    integer peso, altura, imc;
+    integer peso, imc;
+    decimal peso;
 begin
     read(peso);
     read(altura);

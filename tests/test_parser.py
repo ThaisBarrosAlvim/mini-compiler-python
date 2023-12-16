@@ -2,62 +2,74 @@ import os
 from unittest import TestCase
 
 from src.parser import Parser
+from src.utils import Error
 from tests.utils import read_file
 
 
 class TestParser(TestCase):
     BASE_FILE_PATH = os.path.dirname(os.path.abspath(__file__))
     INPUT_TESTS_FOLDER = f'{BASE_FILE_PATH}/resources/input'
+    LEXER_DEBUG = False  # Set to True to see the lexer debug output
 
     def setUp(self) -> None:
-        print(f'\n{self._testMethodName}\n\n')
-        self.parser = Parser()
+        print(f'\n{self._testMethodName.center(45, "-")}\n')
+        self.parser = Parser(self.LEXER_DEBUG)
         self.parser.build(build_lexer=True)
 
     def parser_proccess_data(self, input_file_path: str):
         data = read_file(input_file_path)
-        self.parser.data = data
-        self.parser.parser.parse(data)
+        self.parser.parse_data(data)
 
-    def check_expected(self, input_file_path: str, expected: str | None):
+    def check_expected(self, input_file_path: str, expected_errors: list[Error]):
         self.parser_proccess_data(f'{self.INPUT_TESTS_FOLDER}/{input_file_path}')
-        self.assertEqual(self.parser.errors[-1] if len(self.parser.errors) > 0 else None, expected)
+        print('\n\nErrors: \n',
+              '\n'.join([e.exact().__repr__()[1:-1] for e in self.parser.errors if e.type == 'parser']))
+        self.assertEqual([e for e in self.parser.errors if e.type == 'parser'], expected_errors)
 
     def test_lexer_test1(self):
-        self.check_expected('input_test1.txt', 'Parser: Syntax error at line 10 token WRITE. On:\n'
-                                                                    'write(result)\n'
-                                                                    '^')
+        errors = [
+            Error("Syntax error on 'write'", line=10, column=156, _type='parser'),
+        ]
+        self.check_expected('input_test1.txt', errors)
 
     def test_lexer_test2(self):
-        self.check_expected('input_test2.txt', 'Parser: Syntax error at line 2 token ID. On:\n'
-                                                                    'declarando\n'
-                                                                    '^')
+        errors = [
+            Error("Syntax error on 'declarando'", line=2, column=15, _type='parser')
+        ]
+        self.check_expected('input_test2.txt', errors)
 
     def test_lexer_test3(self):
-        self.check_expected('input_test3.txt', 'Parser: Syntax error at line 11 token ID. On:\n'
-                                                                    'soma := soma # id;\n'
-                                                                    '               ^')
+        errors = [
+            Error("Syntax error on 'id'", line=11, column=181, _type='parser')
+        ]
+        self.check_expected('input_test3.txt', errors)
 
     def test_lexer_test4(self):
-        self.check_expected('input_test4.txt', None)
+        errors = []
+        self.check_expected('input_test4.txt', errors)
 
     def test_lexer_test5(self):
-        self.check_expected('input_test5.txt', 'Parser: Syntax error at line 10 token ELSE. On:\n'
-                                                                    'else\n'
-                                                                    '^')
+        errors = [
+            Error("Syntax error on 'else'", line=10, column=142, _type='parser')
+        ]
+        self.check_expected('input_test5.txt', errors)
 
     def test_lexer_test6(self):
-        self.check_expected('input_test6.txt', 'Parser: Syntax error at line 9 token GREATER. On:\n'
-                                                                    'if ( a>b and a>c ) then\n'
-                                                                    '              ^')
+        errors = [
+            Error("Syntax error on '>'", line=10, column=154, _type='parser')
+        ]
+        self.check_expected('input_test6.txt', errors)
 
     def test_lexer_test7(self):
-        self.check_expected('input_test7.txt', 'Parser: Syntax error at line 9 token GREATER. On:\n'
-                                                                    'maior:= (a>b and a>c)?a:(b>c)?b:c;\n'
-                                                                    '                  ^')
+        errors = [
+            Error("Syntax error on '>'", line=9, column=143, _type='parser')
+        ]
+        self.check_expected('input_test7.txt', errors)
 
     def test_lexer_test8(self):
-        self.check_expected('input_test8.txt', None)
+        errors = []
+        self.check_expected('input_test8.txt', errors)
 
     def test_lexer_test9(self):
-        self.check_expected('input_test9.txt', None)
+        errors = []
+        self.check_expected('input_test9.txt', errors)
